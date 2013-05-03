@@ -125,5 +125,3 @@ Deps.autorun(function(){
 		Session.set('loggedIn','false');
 	}
 });
-
-// code for checking if the google avatar is valid (google supplys none if the user has the default)
