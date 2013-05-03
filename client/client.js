@@ -1,4 +1,14 @@
-Meteor.subscribe("user_services");
+/***************************
+|||| Meteors client code ||||
+****************************/
+
+Meteor.startup(function (){
+	Meteor.subscribe("user_services");
+	Session.setDefault('service','none');
+	Session.setDefault('loggedIn','false');
+	Session.setDefault('possibleGoogleAvatarProblem','true');
+	Session.setDefault('page','0');
+});
 
 var MAX_CHARS = 200;
 
@@ -12,7 +22,21 @@ Template.header.greeting = function () {
 
 // code run on loading of #userInput
 Template.userInput.rendered = function() {
-	$('#inputAvatar').css('background-image', 'url(\''+Session.get('avatarURL')+'\')');
+	Session.set('possibleGoogleAvatarProblem','true');
+
+	if(Session.get('service') == 'google') {
+		$('#inputAvatar').css('background-image', 'url(\'default.png\')');
+		// found on stack exchange, deals with the fact google returns no image if the user is using the google default 
+		var hiddenImg = new Image();
+		hiddenImg.onload = function(){
+			$('#inputAvatar').css('background-image', 'url(\''+Session.get('avatarURL')+'\')');
+			Session.set('possibleGoogleAvatarProblem', 'false');
+		};
+		hiddenImg.src = Session.get('avatarURL');
+	}else{
+		$('#inputAvatar').css('background-image', 'url(\''+Session.get('avatarURL')+'\')');
+		Session.set('possibleGoogleAvatarProblem','false');
+	}
 }
 
 // template events related to #userInput
@@ -24,6 +48,11 @@ Template.userInput.events({
 		if(Meteor.userId()){
 		
 			var $input = $('#inputtext');
+			var avurl = Session.get('avatarURL');
+			
+			if(Session.get('possibleGoogleAvatarProblem') == 'true') {
+				avurl = 'default.png';
+			}
 			
 			// prevent the default submission event
 			event.preventDefault();
@@ -33,7 +62,7 @@ Template.userInput.events({
 				body: $input.val(),
 				created: Date(),
 				owner: Meteor.userId(),
-				ownerAvatarUrl: Session.get('avatarURL'),
+				ownerAvatarUrl: avurl,
 				score:1,
 				weightedScore:1
 			});
@@ -66,6 +95,8 @@ Template.userInput.events({
 
 // code to be run on dom changes
 Deps.autorun(function(){
+
+	// if a user is logged in
 	if(Meteor.userId()){
 		
 		Session.set('loggedIn','true');
@@ -76,8 +107,8 @@ Deps.autorun(function(){
 			avatarUrl = "https://graph.facebook.com/" + Meteor.user().services.facebook.id  + "/picture?type=small";
 			Session.set('service','facebook');
 		} else if(Meteor.user().services.google) {
-			avatarUrl = "http://profiles.google.com/s2/photos/profile/" + Meteor.user().services.google.id + "?sz=" + "80";
 			Session.set('service','google');
+			avatarUrl = "http://profiles.google.com/s2/photos/profile/" + Meteor.user().services.google.id + "?sz=" + "80";
 		} else if(Meteor.user().services.twitter){
 			avatarUrl = "http://api.twitter.com/1/users/profile_image?screen_name=" + Meteor.user().services.twitter.screenName + "&size=bigger";
 			Session.set('service','twitter');
@@ -91,5 +122,8 @@ Deps.autorun(function(){
 	} else {
 		Session.set('avatarURL', 'none');
 		Session.set('service','none');
+		Session.set('loggedIn','false');
 	}
 });
+
+// code for checking if the google avatar is valid (google supplys none if the user has the default)

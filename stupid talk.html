@@ -1,5 +1,6 @@
 <head>
   <title>stupid talk</title>
+  <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
 </head>
 
 <body>
@@ -26,6 +27,7 @@
 	{{#if currentUser}}
 		{{> userInput}}
 	{{/if}}
+	
 	<div class="bubbleRight"><p> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam vel nunc Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam vel nunc libero, accumsan rutrum arcu. Donec gravida mollis imperdiet</p><div class ="avatarRight"></div></div>
 	<div><div class ="avatarLeft"><div class="bubbleLeft"><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam vel nunc Lorem ipsum dolor sit amet, k k</p></div></div></div>
 </template>
@@ -34,7 +36,6 @@
 	<div>
 		<form id="userinput">
 			<div id ="inputAvatar">
-				{{avatar}}
 				<div class="bubbleLeft">
 					<input type="text" id="inputtext" maxlength="200" placeholder="So my friend just said something stupid....">
 				</div>
