@@ -10,21 +10,12 @@ Template.header.greeting = function () {
 	return "<h2>Silly things your friends say</h2>";
 };
 
-Template.userInput.avatar = function() {
-	var avatarUrl = ' ';
-	if(Meteor.user().services.facebook){
-		avatarUrl = "https://graph.facebook.com/" + Meteor.user().services.facebook.id  + "/picture?type=small";
-	} else if(Meteor.user().services.google) {
-		avatarUrl = "http://profiles.google.com/s2/photos/profile/" + Meteor.user().services.google.id + "?sz=" + "80";
-	} else if(Meteor.user().services.twitter){
-		avatarUrl = "http://api.twitter.com/1/users/profile_image?screen_name=" + Meteor.user().services.twitter.screenName + "&size=bigger";
-	} else {
-		avatarUrl = "http://imgur.com/F94SAfy";
-	}
-
-	$('#inputAvatar').css('background-image', 'url('+avatarUrl+')');
+// code run on loading of #userInput
+Template.userInput.rendered = function() {
+	$('#inputAvatar').css('background-image', 'url(\''+Session.get('avatarURL')+'\')');
 }
 
+// template events related to #userInput
 Template.userInput.events({
 
 	// insert the 'talk'
@@ -32,17 +23,6 @@ Template.userInput.events({
 		
 		if(Meteor.userId()){
 		
-			var avatarUrl = ' ';
-			if(Meteor.user().services.facebook){
-				avatarUrl = "https://graph.facebook.com/" + Meteor.user().services.facebook.id  + "/picture?type=small";
-			} else if(Meteor.user().services.google) {
-				avatarUrl = "http://profiles.google.com/s2/photos/profile/" + Meteor.user().services.google.id + "?sz=" + "80";
-			} else if(Meteor.user().services.twitter){
-				avatarUrl = "http://api.twitter.com/1/users/profile_image?screen_name=" + Meteor.user().services.twitter.screenName + "&size=bigger";
-			} else {
-				avatarUrl = "http://imgur.com/F94SAfy";
-			}
-
 			var $input = $('#inputtext');
 			
 			// prevent the default submission event
@@ -53,39 +33,63 @@ Template.userInput.events({
 				body: $input.val(),
 				created: Date(),
 				owner: Meteor.userId(),
-				ownerAvatarUrl: avatarUrl,
+				ownerAvatarUrl: Session.get('avatarURL'),
 				score:1,
 				weightedScore:1
 			});
 			
-			console.log('submitted');
+			console.log('Sucesfully submitted your \'talk\'');
+			
 			// blank it
 			$input.val('');
+			
 			$('#remaining').html(MAX_CHARS);
 		} else {
-			console.log("a user needs to be logged in");
+			console.log("A user needs to be logged in for your to do that");
 		}
 	}, // end of submit handler
-	
 	
 	// remaining chars counter
 	'keyup #inputtext' : function() {
 	
 		$('#remaining').html(MAX_CHARS - $('#inputtext').val().length);
 		
-		if(MAX_CHARS -$('#inputtext').val().length <= 25)
-		{
+		if(MAX_CHARS -$('#inputtext').val().length <= 25) {
 			$('#remaining').addClass("text-error").removeClass("text-warning");
-		}
-		else if(MAX_CHARS -$('#inputtext').val().length > 25 && MAX_CHARS -$('#inputtext').val().length <= 50)
-		{
+		} else if(MAX_CHARS -$('#inputtext').val().length > 25 && MAX_CHARS -$('#inputtext').val().length <= 50) {
 			$('#remaining').addClass("text-warning").removeClass("text-error");
-		}
-		else
-		{
+		} else {
 			$('#remaining').removeClass("text-warning").removeClass("text-error");
 		}
-		
 	}
+});
+
+// code to be run on dom changes
+Deps.autorun(function(){
+	if(Meteor.userId()){
 		
+		Session.set('loggedIn','true');
+		
+		var avatarUrl = ' ';
+		
+		if(Meteor.user().services.facebook){
+			avatarUrl = "https://graph.facebook.com/" + Meteor.user().services.facebook.id  + "/picture?type=small";
+			Session.set('service','facebook');
+		} else if(Meteor.user().services.google) {
+			avatarUrl = "http://profiles.google.com/s2/photos/profile/" + Meteor.user().services.google.id + "?sz=" + "80";
+			Session.set('service','google');
+		} else if(Meteor.user().services.twitter){
+			avatarUrl = "http://api.twitter.com/1/users/profile_image?screen_name=" + Meteor.user().services.twitter.screenName + "&size=bigger";
+			Session.set('service','twitter');
+		} else {
+			avatarUrl = "http://imgur.com/F94SAfy";
+			Session.set('service','unknown');
+		}
+		
+		Session.set('avatarURL',avatarUrl);
+		
+	} else {
+		Session.set('avatarURL', 'none');
+		Session.set('service','none');
+	}
 });
