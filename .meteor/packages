@@ -7,3 +7,7 @@ autopublish
 insecure
 preserve-inputs
 bootstrap
+accounts-google
+accounts-twitter
+accounts-facebook
+accounts-ui

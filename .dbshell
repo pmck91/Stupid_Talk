@@ -1,0 +1,4 @@
+help
+db.StupidThings.find()
+show collections
+db.stupid_things.find()
