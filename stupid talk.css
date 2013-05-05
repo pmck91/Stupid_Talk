@@ -22,18 +22,42 @@ h2{
 }
 
 /* classes */
-.bubbleRight {
+.bubble{
 	position: relative;
 	width: 500px;
 	height: 80px;
 	padding: 0px;
-	margin-left: 50px;
 	margin-bottom: 25px;
 	background: #D2D2E0;
 	-webkit-border-radius: 15px;
 	-moz-border-radius: 15px;
 	border-radius: 15px;
 	vertical-align: middle; 
+}
+
+.bubble .innerBubble{
+	position:absolute;
+	width: 500px;
+	height:80px;
+	display:table;
+}
+
+.innerBubble p{
+	display:table-cell ;
+	font-family: 'Open Sans', sans-serif;
+	vertical-align: middle; 
+	text-align: center;
+	word-wrap:break-word;
+	padding-left:15px;
+	padding-right:15px;
+}
+
+.innerBubble p:before, .innerBubble p:after{
+	content: ' " ';
+}
+
+.bubbleRight {
+	margin-left: 50px;
 }
 
 .bubbleRight:after {
@@ -49,28 +73,8 @@ h2{
 	z-index: 1;
 }
 
-.bubbleRight p{
-	display:block;
-	font-family: 'Open Sans', sans-serif;
-	height:80px;
-	vertical-align: middle; 
-	position:relative;
-	margin-left: 15px;
-	margin-right: 10px;
-	top: 10px;
-}
-
 .bubbleLeft {
-	position: relative;
 	margin-left:130px;
-	margin-bottom: 25px;
-	width: 500px;
-	height: 80px;
-	padding: 0px;
-	background: #D2D2E0;
-	-webkit-border-radius: 15px;
-	-moz-border-radius: 15px;
-	border-radius: 15px;
 }
 
 .bubbleLeft:after {
@@ -86,17 +90,6 @@ h2{
 	z-index: 1;
 }
 
-.bubbleLeft p{
-	display:block;
-	height:80px;
-	font-family: 'Open Sans', sans-serif;
-	vertical-align: middle; 
-	position:relative;
-	margin-left: 15px;
-	margin-right: 10px;
-	top: 10px;
-}
-
 .bubbleLeft input{
 	position:relative;
 	top:5px;
@@ -108,9 +101,8 @@ h2{
 	font-size: 20px;
 }
 
-.avatarLeft {
-position: relative;
-	left: 30px;
+.avatar{
+	position:relative;
 	width: 80px;
 	height: 80px;
 	border-radius: 40px;
@@ -118,20 +110,33 @@ position: relative;
 	-moz-border-radius: 40px;
 	background-size: 100%;
 	margin-bottom:25px;
+	background-image:url('default.png');
+}
+
+.avatarLeft {
+	left: 30px;
 }
 
 .avatarRight {
-	position: relative;
 	left: 550px;
-	top: -90px;
-	width: 80px;
-	height: 80px;
-	border-radius: 40px;
-	-webkit-border-radius: 40px ;
-	-moz-border-radius: 40px;
-	background-size: 100%;
-	margin-bottom:25px;
 }
+
+.vote{
+	position:relative;
+	top: -88px;
+}
+
+.trashvote{
+	position:relative;
+	top: -98px;
+}
+.rightVote{
+	left: -35px;
+}
+.leftVote{
+	left: 638px;
+}
+
 	
 /* ids */
 #main-content {
@@ -153,13 +158,5 @@ position: relative;
 }
 
 #inputAvatar {
-position: relative;
 	left: 30px;
-	width: 80px;
-	height: 80px;
-	border-radius: 40px;
-	-webkit-border-radius: 40px;
-	-moz-border-radius: 40px;
-	background-size: 100%;
-	margin-bottom:25px;
 }

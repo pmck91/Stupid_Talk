@@ -10,6 +10,7 @@
 <template name="body">
 	<div id="main-content">
 		{{> header}}
+		{{> content}}
 	</div>
 </template>
 
@@ -18,7 +19,6 @@
 		{{loginButtons}}
 		{{{title}}}
 		{{{greeting}}}
-		{{> content}}
 	</header>
 </template>
 
@@ -28,24 +28,26 @@
 		{{> userInput}}
 	{{/if}}
 	
-	<div class="bubbleRight"><p> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam vel nunc Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam vel nunc libero, accumsan rutrum arcu. Donec gravida mollis imperdiet</p><div class ="avatarRight"></div></div>
-	<div><div class ="avatarLeft"><div class="bubbleLeft"><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam vel nunc Lorem ipsum dolor sit amet, k k</p></div></div></div>
+	{{#each bubbles}}
+		{{> bubble}}
+	{{/each}}
+	
+</template>id
+
+<template name="bubble">
+	{{{abubble _id body}}}
 </template>
 
 <template name="userInput">
 	<div>
 		<form id="userinput">
-			<div id ="inputAvatar">
-				<div class="bubbleLeft">
-					<input type="text" id="inputtext" maxlength="200" placeholder="So my friend just said something stupid....">
+			<div id ="inputAvatar" class="avatar">
+				<div class="bubbleLeft bubble">
+					<input type="text" id="inputtext" maxlength="150" placeholder="So my friend just said something stupid....">
 				</div>
-				<div id="remaining">200</div>
+				<div id="remaining">150</div>
 			</div>
 			<input type="submit" style="display:none;"/>
 		</form>
 	</div>
-</template>
-
-<template name="bubble">
-
 </template>
