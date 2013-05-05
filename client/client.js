@@ -12,31 +12,36 @@ Meteor.startup(function (){
 	Session.set('left-right','right');
 });
 
-var left = false;
-var MAX_CHARS = 150;
+var left = false; // used to build the alternating list styles
+var MAX_CHARS = 150; // max input chars
 
+// returns the title
 Template.header.title = function () {
 	return "<h1>Stupid Talk...</h1>";
 };
 
+// returns the tag line
 Template.header.greeting = function () {
 	return "<h2>Silly things your friends say</h2>";
 };
 
+// returns the database results
 Template.content.bubbles = function(){
 	return StupidThings.find({}, {sort: {weightedScore: -1, created: 1}});
 };
 
-Template.bubble.rendered = function(){
-};
-
+// generates the html required to display the bubbles on alternating sides - doesnt work correctly if the user changes the position of one of the elements by voting
 Template.bubble.abubble = function(id, body) {
 	
 	var ret = '';
 	if(!left)
 	{
 		ret = ret + "<div class=\"bubblediv\" id=\""+ id+ "\"><div class=\"bubbleRight bubble\"><div class=\"innerBubble\"><p>" + body + "</p></div><div class =\"avatarRight avatar\" id=\""+ id +"avatar\"></div>";
+		
+			// if they are logged in the can see the controls - even if they arent they still cant update the db with the console until they do log in
 			if(Meteor.userId()){
+				
+				//if they own this bubble they can delete it
 				if(Meteor.userId() == this.owner){
 					ret = ret + "<div class=\"rightVote trashvote\"><button class=\"btn btn-mini thumbs-up\"><i class=\"icon-thumbs-up\"></i></button></br><button class=\"btn btn-danger btn-mini delete\"><i class=\"icon-white icon-trash\"></i></button></br>";
 					ret = ret + "<button class=\"btn btn-mini thumbs-down\"><i class=\"icon-thumbs-down\"></i></button></div>";
@@ -47,6 +52,8 @@ Template.bubble.abubble = function(id, body) {
 			ret = ret + "</div></div>";
 	} else {
 		ret = ret + "<div class=\"bubblediv\" id=\""+ id+ "\"><div class =\"avatarLeft avatar\" id=\""+ id+"avatar\"><div class=\"bubbleLeft bubble\"><div class= \"innerBubble\"><p>"+ body + "</p></div></div>";
+			
+			//same as above
 			if(Meteor.userId()){
 				if(Meteor.userId() == this.owner){
 					ret = ret + "<div class=\"leftVote trashvote\"><button class=\"btn btn-mini thumbs-up\"><i class=\"icon-thumbs-up\"></i></button></br><button class=\"btn btn-danger btn-mini delete\"><i class=\"icon-white icon-trash\"></i></button></br><button class=\"btn btn-mini thumbs-down\"><i class=\"icon-thumbs-down\"></i></button></div>";
@@ -61,15 +68,20 @@ Template.bubble.abubble = function(id, body) {
 	return ret;
 };
 
+// handles the clicks for each bubble
 Template.bubble.events({
+
+	// upvotes it
 	'click .thumbs-up': function(){
 		StupidThings.update(this._id, {$inc:{weightedScore: 1}});
 	},
 	
+	// downvotes it
 	'click .thumbs-down': function(){
 		StupidThings.update(this._id, {$set:{weightedScore: -1}});
 	},
 	
+	// deletes it
 	'click .delete': function(){
 		StupidThings.remove(this._id);
 	}
@@ -81,7 +93,7 @@ Template.userInput.rendered = function() {
 
 	if(Session.get('service') == 'google') {
 		$('#inputAvatar').css('background-image', 'url(\'default.png\')');
-		// found on stack exchange, deals with the fact google returns no image if the user is using the google default 
+		// idea based on a stack exchange answer but modifyed to suit my needs, deals with the fact google returns no image if the user is using the google default 
 		var hiddenImg = new Image();
 		hiddenImg.onload = function(){
 			$('#inputAvatar').css('background-image', 'url(\''+Session.get('avatarURL')+'\')');
@@ -97,9 +109,12 @@ Template.userInput.rendered = function() {
 Template.content.rendered = function() {
 	talks = StupidThings.find({}, {sort: {score: -1, created: 1}});
 	
+	// applies the required avatars
 	talks.forEach( function(talk){
 		$('#'+talk._id+'avatar').css('background-image', 'url(\''+talk.ownerAvatarUrl+'\')');
 	});
+	
+	left = false;
 }
 
 // template events related to #userInput
@@ -166,6 +181,7 @@ Deps.autorun(function(){
 		
 		var avatarUrl = ' ';
 		
+		// determins what service the user is using and builds the correct url to get the avatar
 		if(Meteor.user().services.facebook){
 			avatarUrl = "https://graph.facebook.com/" + Meteor.user().services.facebook.id  + "/picture?type=small";
 			Session.set('service','facebook');

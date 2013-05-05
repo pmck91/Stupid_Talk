@@ -1,5 +1,4 @@
 StupidThings = new Meteor.Collection("stupid_things");
-Alignments = new Meteor.Collection("alignment");
 
 StupidThings.allow({
 
@@ -8,6 +7,7 @@ StupidThings.allow({
 		return userId && talk.owner === userId;
 	},
 	
+	// users can only change an opjects score, a bug is that through the console they can change it by any amount they wish
 	update: function(id, talks, fields, modifier){
 		var allowed = ['weightedScore'];
 		
@@ -18,6 +18,7 @@ StupidThings.allow({
 		}
 	},
 	
+	// can only remove it if its yours
 	remove: function(id,talk){
 		return id && talk.owner === id;
 	}

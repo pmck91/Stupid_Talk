@@ -19,8 +19,5 @@ Meteor.startup(function () {
 	});
 });
 
-Deps.autorun(function(){
-	
-});
 
 
