@@ -11,3 +11,6 @@ To run the project use the console to navigate to the directory of the project a
 to access the site go to http://loaclhost:3000
 
 Have fun!!
+
+
+Peter McKinney - C09044507
